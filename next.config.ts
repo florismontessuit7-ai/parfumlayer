@@ -3,11 +3,9 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   distDir: "next-build",
   allowedDevOrigins: ["192.168.1.31"],
-  experimental: {
-    outputFileTracingIncludes: {
-      "/api/recommend": ["./data/**/*"],
-      "/api/search": ["./data/**/*"],
-    },
+  outputFileTracingIncludes: {
+    "/api/recommend": ["./data/**/*"],
+    "/api/search": ["./data/**/*"],
   },
 };
 
