@@ -448,7 +448,35 @@ export default function Home() {
           display: flex;
           gap: 6px;
           flex-wrap: wrap;
+          margin-bottom: 14px;
+        }
+
+        .notes-section {
           margin-bottom: 18px;
+        }
+
+        .notes-label {
+          font-size: 9px;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          color: #BBB;
+          margin-bottom: 8px;
+        }
+
+        .notes-list {
+          display: flex;
+          gap: 6px;
+          flex-wrap: wrap;
+        }
+
+        .note-pill {
+          font-size: 11px;
+          padding: 4px 10px;
+          background: #F5F3EF;
+          color: #555;
+          border-radius: 20px;
+          font-style: italic;
+          font-family: 'Cormorant Garamond', serif;
         }
 
         .reco-why {
@@ -650,6 +678,17 @@ export default function Home() {
                           <span key={a} className="tag">{toFr(a)}</span>
                         ))}
                       </div>
+
+                      {r.notes.length > 0 && (
+                        <div className="notes-section">
+                          <div className="notes-label">Composition</div>
+                          <div className="notes-list">
+                            {r.notes.map(n => (
+                              <span key={n} className="note-pill">{n}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
 
                       <div className="reco-why">{r.why}</div>
                     </div>

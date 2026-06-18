@@ -125,8 +125,13 @@ Styles de layering à attribuer à chaque recommandation :
 Voici une liste de parfums candidats (id: "nom" de marque (genre) - accords):
 ${candidatesText}
 
-Sélectionne exactement 10 parfums de cette liste qui créent le meilleur layering avec "${perfume.name}". Assigne à chacun UN style parmi : Classique, Osé, Frais, Intense, Signature. Réponds UNIQUEMENT avec un tableau JSON valide, sans markdown, sans explication, juste le JSON brut :
-[{"id":123,"score":90,"style":"Classique","why":"Explication courte en français de pourquoi ce layering fonctionne et ce qu'il apporte."}]`
+Sélectionne exactement 10 parfums de cette liste qui créent le meilleur layering avec "${perfume.name}". Pour chacun :
+- Assigne UN style parmi : Classique, Osé, Frais, Intense, Signature
+- Liste les 4 à 6 notes olfactives principales du parfum (ex: bergamote, rose, musc blanc, cèdre, vanille) — en français, depuis ta connaissance des parfums
+- Explique pourquoi ce layering fonctionne
+
+Réponds UNIQUEMENT avec un tableau JSON valide, sans markdown, sans explication, juste le JSON brut :
+[{"id":123,"score":90,"style":"Classique","notes":["bergamote","rose","musc blanc","cèdre"],"why":"Explication courte en français de pourquoi ce layering fonctionne et ce qu'il apporte."}]`
 
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -145,13 +150,13 @@ Sélectionne exactement 10 parfums de cette liste qui créent le meilleur layeri
     const text = data.content[0].text
     const match = text.match(/\[[\s\S]*\]/)
     if (!match) throw new Error('No JSON array found')
-    const picks: { id: number; score: number; style: string; why: string }[] = JSON.parse(match[0])
+    const picks: { id: number; score: number; style: string; notes: string[]; why: string }[] = JSON.parse(match[0])
 
     const recos: Recommendation[] = picks
       .map(pick => {
         const c = candidates.find(c => c.id === pick.id)
         if (!c) return null
-        return { name: c.name, brand: c.brand, gender: c.gender, accords: c.accords, score: pick.score, style: pick.style ?? 'Classique', why: pick.why }
+        return { name: c.name, brand: c.brand, gender: c.gender, accords: c.accords, notes: pick.notes ?? [], score: pick.score, style: pick.style ?? 'Classique', why: pick.why }
       })
       .filter((r): r is Recommendation => r !== null)
 

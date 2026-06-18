@@ -13,6 +13,7 @@ export interface Recommendation {
   brand: string
   gender: string
   accords: string[]
+  notes: string[]
   score: number
   style: LayeringStyle
   why: string
