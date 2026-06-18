@@ -6,11 +6,14 @@ export interface Perfume {
   accords: string[]
 }
 
+export type LayeringStyle = 'Classique' | 'Osé' | 'Frais' | 'Intense' | 'Signature'
+
 export interface Recommendation {
   name: string
   brand: string
   gender: string
   accords: string[]
   score: number
+  style: LayeringStyle
   why: string
 }
