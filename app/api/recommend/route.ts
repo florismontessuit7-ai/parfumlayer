@@ -127,7 +127,7 @@ ${candidatesText}
 
 Sélectionne exactement 10 parfums de cette liste qui créent le meilleur layering avec "${perfume.name}". Pour chacun :
 - Assigne UN style parmi : Classique, Osé, Frais, Intense, Signature
-- Liste les 4 à 6 notes olfactives principales du parfum (ex: bergamote, rose, musc blanc, cèdre, vanille) — en français, depuis ta connaissance des parfums
+- Liste les 4 à 6 notes olfactives principales du parfum en français (ex: bergamote, rose, musc blanc, cèdre, vanille) — UNIQUEMENT si tu es certain de la composition. Si tu ne connais pas ce parfum avec certitude, retourne un tableau vide []
 - Explique pourquoi ce layering fonctionne
 
 Réponds UNIQUEMENT avec un tableau JSON valide, sans markdown, sans explication, juste le JSON brut :
