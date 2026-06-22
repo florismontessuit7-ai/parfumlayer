@@ -1,8 +1,9 @@
-import { readFileSync } from 'fs'
+import { readFileSync, existsSync } from 'fs'
 import path from 'path'
 import type { Perfume, Recommendation } from '@/app/types'
 
 let perfumes: Perfume[] | null = null
+let notesMap: Record<string, string[]> | null = null
 
 function getPerfumes(): Perfume[] {
   if (!perfumes) {
@@ -10,6 +11,14 @@ function getPerfumes(): Perfume[] {
     perfumes = JSON.parse(file)
   }
   return perfumes!
+}
+
+function getNotesMap(): Record<string, string[]> {
+  if (!notesMap) {
+    const file = path.join(process.cwd(), 'data', 'notes.json')
+    notesMap = existsSync(file) ? JSON.parse(readFileSync(file, 'utf-8')) : {}
+  }
+  return notesMap!
 }
 
 // Familles olfactives compatibles pour le layering
@@ -152,11 +161,15 @@ Réponds UNIQUEMENT avec un tableau JSON valide, sans markdown, sans explication
     if (!match) throw new Error('No JSON array found')
     const picks: { id: number; score: number; style: string; notes: string[]; why: string }[] = JSON.parse(match[0])
 
+    const nm = getNotesMap()
+
     const recos: Recommendation[] = picks
       .map(pick => {
         const c = candidates.find(c => c.id === pick.id)
         if (!c) return null
-        return { name: c.name, brand: c.brand, gender: c.gender, accords: c.accords, notes: pick.notes ?? [], score: pick.score, style: pick.style ?? 'Classique', why: pick.why }
+        // Priorité aux notes scrapées de Fragrantica, sinon celles de Claude
+        const notes = nm[String(c.id)]?.length ? nm[String(c.id)] : (pick.notes ?? [])
+        return { name: c.name, brand: c.brand, gender: c.gender, accords: c.accords, notes, score: pick.score, style: pick.style ?? 'Classique', why: pick.why }
       })
       .filter((r): r is Recommendation => r !== null)
 

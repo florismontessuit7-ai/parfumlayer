@@ -42,3 +42,7 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# dumps de données sources bruts (reproductibles via les scripts dans scripts/)
+/data/parfumo_raw.csv
+/data/fragrantica_kaggle/
