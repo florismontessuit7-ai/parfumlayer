@@ -28,6 +28,9 @@ function isLikelyFrench(s) {
   return /[éèêàâôûîç]/i.test(s)
 }
 
+// Les notes sont regroupées par tier (top/heart/base) au lieu d'une liste plate
+const TIERS = ['top', 'heart', 'base']
+
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)) }
 
 async function translateBatch(terms) {
@@ -80,8 +83,10 @@ async function main() {
   // Collecter les notes uniques anglaises (pas déjà traduites, pas déjà en français)
   const unique = new Set()
   for (const id in notes) {
-    for (const n of notes[id]) {
-      if (!existingTranslations[n] && !isLikelyFrench(n)) unique.add(n)
+    for (const tier of TIERS) {
+      for (const n of notes[id][tier] ?? []) {
+        if (!existingTranslations[n] && !isLikelyFrench(n)) unique.add(n)
+      }
     }
   }
   const terms = [...unique]
@@ -108,10 +113,13 @@ async function main() {
   // Appliquer les traductions à notes.json
   let applied = 0
   for (const id in notes) {
-    notes[id] = notes[id].map(n => {
-      if (translations[n]) { applied++; return translations[n] }
-      return n
-    })
+    for (const tier of TIERS) {
+      if (!notes[id][tier]) continue
+      notes[id][tier] = notes[id][tier].map(n => {
+        if (translations[n]) { applied++; return translations[n] }
+        return n
+      })
+    }
   }
   writeFileSync(NOTES_FILE, JSON.stringify(notes))
 

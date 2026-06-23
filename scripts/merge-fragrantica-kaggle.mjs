@@ -84,16 +84,19 @@ function parseNoteList(str) {
 }
 
 function extractNotesFromDescription(desc) {
-  if (!desc) return []
+  if (!desc) return { top: [], heart: [], base: [] }
   const top = desc.match(/top notes? (?:are|is)\s+([^;.]+)/i)
   const mid = desc.match(/middle notes? (?:are|is)\s+([^;.]+)/i)
   const base = desc.match(/base notes? (?:are|is)\s+([^;.]+)/i)
-  const all = [
-    ...parseNoteList(top?.[1]),
-    ...parseNoteList(mid?.[1]),
-    ...parseNoteList(base?.[1]),
-  ]
-  return [...new Set(all)]
+  return {
+    top: [...new Set(parseNoteList(top?.[1]))],
+    heart: [...new Set(parseNoteList(mid?.[1]))],
+    base: [...new Set(parseNoteList(base?.[1]))],
+  }
+}
+
+function hasNotes(entry) {
+  return !!entry && (entry.top?.length || entry.heart?.length || entry.base?.length)
 }
 
 console.log('Lecture du CSV Kaggle (Fragrantica)...')
@@ -119,12 +122,16 @@ for (let i = 1; i < rows.length; i++) {
   if (!name || !brand) continue
 
   const notes = extractNotesFromDescription(r[idx.desc])
-  if (notes.length === 0) continue
+  if (!hasNotes(notes)) continue
   withNotesCount++
 
   const key = normalize(name) + '|' + normalize(brand)
   const existing = kaggleIndex.get(key)
-  kaggleIndex.set(key, existing ? [...new Set([...existing, ...notes])] : notes)
+  kaggleIndex.set(key, existing ? {
+    top: [...new Set([...existing.top, ...notes.top])],
+    heart: [...new Set([...existing.heart, ...notes.heart])],
+    base: [...new Set([...existing.base, ...notes.base])],
+  } : notes)
 }
 console.log(`Index Kaggle construit : ${kaggleIndex.size} parfums uniques avec notes (${withNotesCount} lignes avec notes)\n`)
 
@@ -136,7 +143,7 @@ let matched = 0
 let alreadyHad = 0
 for (const p of perfumes) {
   const id = String(p.id)
-  if (notes[id]?.length) { alreadyHad++; continue }
+  if (hasNotes(notes[id])) { alreadyHad++; continue }
   const key = normalize(p.name) + '|' + normalize(p.brand)
   const found = kaggleIndex.get(key)
   if (found) {

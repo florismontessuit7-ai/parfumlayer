@@ -56,7 +56,8 @@ if (matches.length === 0) {
 const exact = matches.find(p => p.name.toLowerCase() === qName) || matches[0]
 const notesList = rawNotes.split(',').map(n => n.trim()).filter(Boolean)
 
-notes[String(exact.id)] = notesList
+// Pas de distinction tête/cœur/fond pour un ajout manuel : on les place en cœur (notes principales)
+notes[String(exact.id)] = { top: [], heart: notesList, base: [] }
 writeFileSync(NOTES_FILE, JSON.stringify(notes, null, 2))
 
 console.log(`\n✅ "${exact.name}" — ${exact.brand}`)

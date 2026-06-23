@@ -137,7 +137,8 @@ async function main() {
 
     errors = 0
     const parsedNotes = parseNotes(html)
-    notes[id] = parsedNotes
+    // Pas de distinction tête/cœur/fond dans ce scrape direct : on les place en cœur
+    notes[id] = { top: [], heart: parsedNotes, base: [] }
     saved++
 
     process.stdout.write(`✅ ${parsedNotes.length} notes : ${parsedNotes.slice(0, 3).join(', ')}${parsedNotes.length > 3 ? '...' : ''}\n`)

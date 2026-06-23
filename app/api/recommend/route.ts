@@ -1,9 +1,9 @@
 import { readFileSync, existsSync } from 'fs'
 import path from 'path'
-import type { Perfume, Recommendation } from '@/app/types'
+import type { Perfume, Recommendation, NotesPyramid } from '@/app/types'
 
 let perfumes: Perfume[] | null = null
-let notesMap: Record<string, string[]> | null = null
+let notesMap: Record<string, NotesPyramid> | null = null
 
 function getPerfumes(): Perfume[] {
   if (!perfumes) {
@@ -13,12 +13,16 @@ function getPerfumes(): Perfume[] {
   return perfumes!
 }
 
-function getNotesMap(): Record<string, string[]> {
+function getNotesMap(): Record<string, NotesPyramid> {
   if (!notesMap) {
     const file = path.join(process.cwd(), 'data', 'notes.json')
     notesMap = existsSync(file) ? JSON.parse(readFileSync(file, 'utf-8')) : {}
   }
   return notesMap!
+}
+
+function hasNotes(p?: NotesPyramid): p is NotesPyramid {
+  return !!p && (p.top.length > 0 || p.heart.length > 0 || p.base.length > 0)
 }
 
 // Familles olfactives compatibles pour le layering
@@ -167,8 +171,10 @@ Réponds UNIQUEMENT avec un tableau JSON valide, sans markdown, sans explication
       .map(pick => {
         const c = candidates.find(c => c.id === pick.id)
         if (!c) return null
-        // Priorité aux notes scrapées de Fragrantica, sinon celles de Claude
-        const notes = nm[String(c.id)]?.length ? nm[String(c.id)] : (pick.notes ?? [])
+        // Priorité aux notes tête/cœur/fond de Parfumo+Fragrantica, sinon celles de Claude
+        // (pas de pyramide pour Claude : on les place en cœur, notes principales)
+        const fromMap = nm[String(c.id)]
+        const notes: NotesPyramid = hasNotes(fromMap) ? fromMap : { top: [], heart: pick.notes ?? [], base: [] }
         return { name: c.name, brand: c.brand, gender: c.gender, accords: c.accords, notes, score: pick.score, style: pick.style ?? 'Classique', why: pick.why }
       })
       .filter((r): r is Recommendation => r !== null)

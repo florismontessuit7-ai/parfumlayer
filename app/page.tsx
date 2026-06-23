@@ -455,6 +455,14 @@ export default function Home() {
           margin-bottom: 18px;
         }
 
+        .notes-tier {
+          margin-bottom: 10px;
+        }
+
+        .notes-tier:last-child {
+          margin-bottom: 0;
+        }
+
         .notes-label {
           font-size: 9px;
           letter-spacing: 2px;
@@ -472,11 +480,24 @@ export default function Home() {
         .note-pill {
           font-size: 11px;
           padding: 4px 10px;
-          background: #F5F3EF;
-          color: #555;
           border-radius: 20px;
           font-style: italic;
           font-family: 'Cormorant Garamond', serif;
+        }
+
+        .note-pill-top {
+          background: #FAF8F4;
+          color: #777;
+        }
+
+        .note-pill-heart {
+          background: #F5F3EF;
+          color: #555;
+        }
+
+        .note-pill-base {
+          background: #ECE7DE;
+          color: #443;
         }
 
         .reco-why {
@@ -679,14 +700,38 @@ export default function Home() {
                         ))}
                       </div>
 
-                      {r.notes.length > 0 && (
+                      {(r.notes.top.length > 0 || r.notes.heart.length > 0 || r.notes.base.length > 0) && (
                         <div className="notes-section">
-                          <div className="notes-label">Composition</div>
-                          <div className="notes-list">
-                            {r.notes.map(n => (
-                              <span key={n} className="note-pill">{n}</span>
-                            ))}
-                          </div>
+                          {r.notes.top.length > 0 && (
+                            <div className="notes-tier">
+                              <div className="notes-label">Tête</div>
+                              <div className="notes-list">
+                                {r.notes.top.map(n => (
+                                  <span key={n} className="note-pill note-pill-top">{n}</span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          {r.notes.heart.length > 0 && (
+                            <div className="notes-tier">
+                              <div className="notes-label">Cœur</div>
+                              <div className="notes-list">
+                                {r.notes.heart.map(n => (
+                                  <span key={n} className="note-pill note-pill-heart">{n}</span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          {r.notes.base.length > 0 && (
+                            <div className="notes-tier">
+                              <div className="notes-label">Fond</div>
+                              <div className="notes-list">
+                                {r.notes.base.map(n => (
+                                  <span key={n} className="note-pill note-pill-base">{n}</span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       )}
 

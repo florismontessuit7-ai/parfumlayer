@@ -122,16 +122,19 @@ for (let i = 1; i < rows.length; i++) {
   if (!name || !brand) continue
 
   const top = splitNotes(r[idx.top])
-  const mid = splitNotes(r[idx.mid])
+  const heart = splitNotes(r[idx.mid])
   const base = splitNotes(r[idx.base])
-  if (top.length === 0 && mid.length === 0 && base.length === 0) continue
+  if (top.length === 0 && heart.length === 0 && base.length === 0) continue
 
   const key = matchKey(name, brand)
-  const combined = [...new Set([...top, ...mid, ...base])]
   const existing = parfumoIndex.get(key)
   // Si plusieurs entrées Parfumo se réduisent à la même clé (variantes de concentration),
   // on fusionne leurs notes plutôt que d'écraser.
-  parfumoIndex.set(key, existing ? [...new Set([...existing, ...combined])] : combined)
+  parfumoIndex.set(key, existing ? {
+    top: [...new Set([...existing.top, ...top])],
+    heart: [...new Set([...existing.heart, ...heart])],
+    base: [...new Set([...existing.base, ...base])],
+  } : { top, heart, base })
 }
 console.log(`Index Parfumo construit : ${parfumoIndex.size} parfums avec notes\n`)
 
@@ -139,11 +142,15 @@ console.log('Lecture de la base de parfums ParfumLayer...')
 const perfumes = JSON.parse(readFileSync(PERFUMES_FILE, 'utf-8'))
 const notes = existsSync(NOTES_FILE) ? JSON.parse(readFileSync(NOTES_FILE, 'utf-8')) : {}
 
+function hasNotes(entry) {
+  return !!entry && (entry.top?.length || entry.heart?.length || entry.base?.length)
+}
+
 let matched = 0
 let alreadyHad = 0
 for (const p of perfumes) {
   const id = String(p.id)
-  if (notes[id]?.length) { alreadyHad++; continue }
+  if (hasNotes(notes[id])) { alreadyHad++; continue }
   const key = matchKey(p.name, p.brand)
   const found = parfumoIndex.get(key)
   if (found) {
