@@ -87,6 +87,14 @@ export default function MentionsLegalesPage() {
           l'utilisation du site relève de la compétence des tribunaux français.
         </p>
       </div>
+
+      <div className="dark-card">
+        <h2>Conditions d'utilisation</h2>
+        <p>
+          L'utilisation du site ParfumLayer est par ailleurs soumise à nos{' '}
+          <a href="/cgu">Conditions Générales d'Utilisation</a>.
+        </p>
+      </div>
     </DarkPageShell>
   )
 }
