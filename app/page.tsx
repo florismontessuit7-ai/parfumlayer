@@ -11,11 +11,18 @@ function genderLabel(gender: string) {
 }
 
 const STYLE_COLORS: Record<string, string> = {
-  Classique: '#8B7355',
+  Classique: '#5B6770',
   Osé:       '#9B6B9B',
   Frais:     '#4A90B8',
   Intense:   '#B85555',
   Signature: '#4A9B7F',
+}
+
+function hexToRgba(hex: string, alpha: number) {
+  const r = parseInt(hex.slice(1, 3), 16)
+  const g = parseInt(hex.slice(3, 5), 16)
+  const b = parseInt(hex.slice(5, 7), 16)
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }
 
 export default function Home() {
@@ -75,12 +82,10 @@ export default function Home() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;0,500&display=swap');
-
         * { margin:0; padding:0; box-sizing:border-box; }
 
         body {
-          background: #F9F8F6;
+          background: #F4F5F6;
           color: #1A1A1A;
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
           min-height: 100vh;
@@ -97,12 +102,12 @@ export default function Home() {
         .header {
           padding: 72px 0 64px;
           text-align: center;
-          border-bottom: 1px solid #E8E5E0;
+          border-bottom: 1px solid #DBDEE0;
           margin-bottom: 56px;
         }
 
         .logo {
-          font-family: 'Cormorant Garamond', serif;
+          font-family: var(--font-cormorant), serif;
           font-size: 48px;
           font-weight: 300;
           letter-spacing: 4px;
@@ -120,7 +125,7 @@ export default function Home() {
           font-size: 11px;
           letter-spacing: 3px;
           text-transform: uppercase;
-          color: #999;
+          color: #8E949A;
         }
 
         /* ── RECHERCHE ── */
@@ -128,13 +133,13 @@ export default function Home() {
           font-size: 11px;
           letter-spacing: 3px;
           text-transform: uppercase;
-          color: #999;
+          color: #8E949A;
           margin-bottom: 14px;
         }
 
         .search-row {
           display: flex;
-          border: 1px solid #D8D5D0;
+          border: 1px solid #CBCFD1;
           background: #fff;
           transition: border-color 0.2s;
         }
@@ -155,33 +160,52 @@ export default function Home() {
         }
 
         .search-input::placeholder {
-          color: #BBB;
+          color: #ACB1B5;
         }
 
         .search-btn {
           background: #1A1A1A;
           border: none;
           padding: 16px 22px;
-          color: #F9F8F6;
+          color: #F4F5F6;
           font-size: 16px;
           cursor: pointer;
           transition: background 0.2s;
           flex-shrink: 0;
         }
 
-        .search-btn:hover { background: #333; }
+        .search-btn:hover { background: #2B2E30; }
 
         /* ── ÉTAT VIDE ── */
         .empty {
           text-align: center;
-          padding: 80px 0;
+          padding: 24px 0 80px;
+        }
+
+        .bottle-stage {
+          perspective: 900px;
+          width: 130px;
+          height: 220px;
+          margin: 0 auto 32px;
+        }
+
+        .bottle {
+          width: 100%;
+          height: 100%;
+          transform-style: preserve-3d;
+          animation: spin-bottle 9s linear infinite;
+        }
+
+        @keyframes spin-bottle {
+          from { transform: rotateY(0deg); }
+          to   { transform: rotateY(360deg); }
         }
 
         .empty-title {
-          font-family: 'Cormorant Garamond', serif;
+          font-family: var(--font-cormorant), serif;
           font-size: 22px;
           font-weight: 300;
-          color: #BBB;
+          color: #ACB1B5;
           margin-bottom: 10px;
         }
 
@@ -189,7 +213,7 @@ export default function Home() {
           font-size: 12px;
           letter-spacing: 2px;
           text-transform: uppercase;
-          color: #CCC;
+          color: #BDC2C5;
         }
 
         /* ── RÉSULTATS DE RECHERCHE ── */
@@ -197,13 +221,13 @@ export default function Home() {
           font-size: 11px;
           letter-spacing: 3px;
           text-transform: uppercase;
-          color: #999;
+          color: #8E949A;
           margin-bottom: 20px;
           margin-top: 40px;
         }
 
         .result-list {
-          border-top: 1px solid #E8E5E0;
+          border-top: 1px solid #DBDEE0;
         }
 
         .result-item {
@@ -211,7 +235,7 @@ export default function Home() {
           align-items: center;
           justify-content: space-between;
           padding: 20px 0;
-          border-bottom: 1px solid #E8E5E0;
+          border-bottom: 1px solid #DBDEE0;
           cursor: pointer;
           transition: padding-left 0.2s;
           gap: 16px;
@@ -227,7 +251,7 @@ export default function Home() {
         }
 
         .result-name {
-          font-family: 'Cormorant Garamond', serif;
+          font-family: var(--font-cormorant), serif;
           font-size: 22px;
           font-weight: 300;
           color: #1A1A1A;
@@ -238,7 +262,7 @@ export default function Home() {
           font-size: 11px;
           letter-spacing: 2px;
           text-transform: uppercase;
-          color: #999;
+          color: #8E949A;
           margin-top: 3px;
         }
 
@@ -253,13 +277,13 @@ export default function Home() {
           font-size: 10px;
           letter-spacing: 1px;
           padding: 3px 8px;
-          background: #F0EDE8;
-          color: #888;
+          background: #E9EBEC;
+          color: #7D8388;
           text-transform: uppercase;
         }
 
         .result-arrow {
-          color: #CCC;
+          color: #BDC2C5;
           font-size: 18px;
           flex-shrink: 0;
           opacity: 0;
@@ -275,7 +299,7 @@ export default function Home() {
           font-size: 11px;
           letter-spacing: 2px;
           text-transform: uppercase;
-          color: #999;
+          color: #8E949A;
           background: none;
           border: none;
           cursor: pointer;
@@ -288,7 +312,7 @@ export default function Home() {
 
         .selected-block {
           padding-bottom: 40px;
-          border-bottom: 1px solid #E8E5E0;
+          border-bottom: 1px solid #DBDEE0;
           margin-bottom: 48px;
         }
 
@@ -296,12 +320,12 @@ export default function Home() {
           font-size: 11px;
           letter-spacing: 3px;
           text-transform: uppercase;
-          color: #999;
+          color: #8E949A;
           margin-bottom: 12px;
         }
 
         .selected-name {
-          font-family: 'Cormorant Garamond', serif;
+          font-family: var(--font-cormorant), serif;
           font-size: 42px;
           font-weight: 300;
           color: #1A1A1A;
@@ -312,7 +336,7 @@ export default function Home() {
           font-size: 12px;
           letter-spacing: 3px;
           text-transform: uppercase;
-          color: #888;
+          color: #7D8388;
           margin-top: 8px;
         }
 
@@ -335,7 +359,7 @@ export default function Home() {
           font-size: 11px;
           letter-spacing: 3px;
           text-transform: uppercase;
-          color: #999;
+          color: #8E949A;
         }
 
         .live-dot {
@@ -354,7 +378,7 @@ export default function Home() {
 
         .reco-card {
           background: #fff;
-          border: 1px solid #E8E5E0;
+          border: 1px solid #DBDEE0;
           padding: 28px;
           margin-bottom: 12px;
           animation: fadeUp 0.4s ease forwards;
@@ -363,7 +387,7 @@ export default function Home() {
         }
 
         .reco-card:hover {
-          border-color: #C8C5C0;
+          border-color: #B7BBBE;
           box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         }
 
@@ -392,7 +416,7 @@ export default function Home() {
         }
 
         .reco-name {
-          font-family: 'Cormorant Garamond', serif;
+          font-family: var(--font-cormorant), serif;
           font-size: 26px;
           font-weight: 300;
           color: #1A1A1A;
@@ -403,7 +427,7 @@ export default function Home() {
           font-size: 10px;
           letter-spacing: 2px;
           text-transform: uppercase;
-          color: #999;
+          color: #8E949A;
           margin-top: 3px;
         }
 
@@ -413,7 +437,7 @@ export default function Home() {
         }
 
         .score-num {
-          font-family: 'Cormorant Garamond', serif;
+          font-family: var(--font-cormorant), serif;
           font-size: 36px;
           font-weight: 300;
           color: #1A1A1A;
@@ -424,7 +448,7 @@ export default function Home() {
           font-size: 10px;
           letter-spacing: 2px;
           text-transform: uppercase;
-          color: #BBB;
+          color: #ACB1B5;
         }
 
         .style-badge {
@@ -438,8 +462,8 @@ export default function Home() {
         }
 
         .style-dot {
-          width: 5px;
-          height: 5px;
+          width: 10px;
+          height: 10px;
           border-radius: 50%;
           flex-shrink: 0;
         }
@@ -467,7 +491,7 @@ export default function Home() {
           font-size: 9px;
           letter-spacing: 2px;
           text-transform: uppercase;
-          color: #BBB;
+          color: #ACB1B5;
           margin-bottom: 8px;
         }
 
@@ -482,31 +506,31 @@ export default function Home() {
           padding: 4px 10px;
           border-radius: 20px;
           font-style: italic;
-          font-family: 'Cormorant Garamond', serif;
+          font-family: var(--font-cormorant), serif;
         }
 
         .note-pill-top {
-          background: #FAF8F4;
-          color: #777;
+          background: #F1F2F3;
+          color: #6D7378;
         }
 
         .note-pill-heart {
-          background: #F5F3EF;
-          color: #555;
+          background: #E7E9EA;
+          color: #4E5359;
         }
 
         .note-pill-base {
-          background: #ECE7DE;
-          color: #443;
+          background: #D7DADC;
+          color: #3A3D40;
         }
 
         .reco-why {
-          font-family: 'Cormorant Garamond', serif;
+          font-family: var(--font-cormorant), serif;
           font-size: 16px;
           font-style: italic;
-          color: #666;
+          color: #5E6469;
           line-height: 1.7;
-          border-top: 1px solid #F0EDE8;
+          border-top: 1px solid #E9EBEC;
           padding-top: 16px;
         }
 
@@ -520,7 +544,7 @@ export default function Home() {
           font-size: 11px;
           letter-spacing: 3px;
           text-transform: uppercase;
-          color: #BBB;
+          color: #ACB1B5;
           animation: flicker 1.4s infinite;
         }
 
@@ -563,6 +587,14 @@ export default function Home() {
           .tagline { display: none; }
           .selected-name { font-size: 26px; }
         }
+
+        /* ── MOUVEMENT RÉDUIT ── */
+        @media (prefers-reduced-motion: reduce) {
+          .bottle { animation: none; }
+          .live-dot { animation: none; }
+          .loading-text { animation: none; }
+          .reco-card { animation: none; opacity: 1; }
+        }
       `}</style>
 
       <div className="app">
@@ -604,6 +636,24 @@ export default function Home() {
 
             {!searching && results.length === 0 && !error && (
               <div className="empty">
+                <div className="bottle-stage">
+                  <div className="bottle">
+                    <svg viewBox="0 0 130 220" width="100%" height="100%">
+                      <ellipse cx="65" cy="36" rx="12" ry="5" fill="#D7DADC" stroke="#5B6770" strokeWidth="1.2" />
+                      <rect x="53" y="14" width="24" height="24" rx="3" fill="#D7DADC" stroke="#5B6770" strokeWidth="1.2" />
+                      <rect x="59" y="38" width="12" height="14" fill="#E7E9EA" stroke="#5B6770" strokeWidth="1.2" />
+                      <path
+                        d="M52 52 H78 C84 60 86 70 86 80 V188 C86 198 78 206 65 206 C52 206 44 198 44 188 V80 C44 70 46 60 52 52 Z"
+                        fill="#F1F2F3"
+                        stroke="#5B6770"
+                        strokeWidth="1.4"
+                      />
+                      <line x1="60" y1="68" x2="60" y2="190" stroke="#C9CDCF" strokeWidth="1" />
+                      <line x1="44" y1="92" x2="86" y2="92" stroke="#C9CDCF" strokeWidth="1" />
+                      <line x1="44" y1="160" x2="86" y2="160" stroke="#C9CDCF" strokeWidth="1" />
+                    </svg>
+                  </div>
+                </div>
                 <div className="empty-title">Entrez un parfum pour commencer</div>
                 <div className="empty-sub">70 000 fragrances disponibles</div>
               </div>
@@ -673,7 +723,7 @@ export default function Home() {
                 </div>
 
                 {recos.map((r, i) => {
-                  const color = STYLE_COLORS[r.style] ?? '#888'
+                  const color = STYLE_COLORS[r.style] ?? '#7D8388'
                   return (
                     <div key={i} className="reco-card">
                       <div className="reco-top">
@@ -690,7 +740,7 @@ export default function Home() {
                       </div>
 
                       <div className="style-badge" style={{ color }}>
-                        <span className="style-dot" style={{ background: color }} />
+                        <span className="style-dot" style={{ background: color, boxShadow: `0 0 0 4px ${hexToRgba(color, 0.2)}` }} />
                         {r.style}
                       </div>
 
